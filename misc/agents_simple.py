@@ -53,9 +53,6 @@ def get_current_date_time() -> str:
     current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     return f"Current date and time: {current_datetime}"
 
-
-
-
         
 load_dotenv(find_dotenv())
 
