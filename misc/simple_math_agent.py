@@ -26,33 +26,6 @@ def exponentiate(x:float, y:float) -> float:
 def multiply(x:float, y:float) -> float:
     """Multiply 'x' by 'y'"""
     return x*y
-
-@tool
-def get_location_from_ip():
-    """Get geographical location from ip address"""
-    try:
-        response = requests.get('https://ipinfo.io/json')
-        data = response.json()
-        if 'loc' in data:
-            latitude, longitude = data['loc'].split(',')
-            data = (
-                f"Latitude: {latitude},\n"
-                f"Longitude: {longitude},\n"
-                f"City: {data.get('city','N/A')},\n"
-                f"Country: {data.get('country', 'N/A')}"
-                )
-            return data
-        else:
-            return "Location data not available"
-    except Exception as e:
-            return f"An error occurred: {e}"
-
-@tool
-def get_current_date_time() -> str:
-    """Get current date and time"""
-    current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    return f"Current date and time: {current_datetime}"
-
         
 load_dotenv(find_dotenv())
 
@@ -80,6 +53,6 @@ agent = create_tool_calling_agent(
 )
 
 agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True)
-agent_executor.invoke({"input": "what is my name",
+agent_executor.invoke({"input": "what 9.45 to the  power 5.6",
               "chat_history": memory.chat_memory.messages})
 

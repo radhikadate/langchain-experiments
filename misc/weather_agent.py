@@ -6,27 +6,6 @@ from langchain.memory import ConversationBufferMemory
 import requests
 from datetime import datetime
 
-
-@tool
-def add(x:float, y:float) -> float:
-    """Add 'x' and 'y'."""
-    return x+y
-
-@tool
-def subtract(x:float, y:float) -> float:
-    """Add 'x' and 'y'."""
-    return x-y
-
-@tool
-def exponentiate(x:float, y:float) -> float:
-    """Raise 'x' to the power 'y'"""
-    return x**y
-
-@tool 
-def multiply(x:float, y:float) -> float:
-    """Multiply 'x' by 'y'"""
-    return x*y
-
 @tool
 def get_location_from_ip():
     """Get geographical location from ip address"""
@@ -69,9 +48,8 @@ MessagesPlaceholder(variable_name="chat_history"),
 ])
 
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-
-tools =[add, subtract, exponentiate, multiply]
 toolbox = load_tools(tool_names=['serpapi'], llm=model)
+tools = toolbox + [get_current_date_time, get_location_from_ip]
 
 agent = create_tool_calling_agent(
     llm=model,
@@ -80,6 +58,16 @@ agent = create_tool_calling_agent(
 )
 
 agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True)
-agent_executor.invoke({"input": "what is my name",
-              "chat_history": memory.chat_memory.messages})
 
+user_question = "I have a few questions. Where am I located right now? How is the weather where I am right now? Please give me degrees in Celcius"
+answer = agent_executor.invoke({"input": user_question})
+
+# Beautiful output formatting
+print("\n" + "="*80)
+print("🤖 AI WEATHER AGENT RESPONSE")
+print("="*80)
+print(f"📝 Question: {user_question}")
+print("\n" + "-"*80)
+print("🔍 AGENT RESPONSE:")
+print(answer['output'])
+print("="*80)
